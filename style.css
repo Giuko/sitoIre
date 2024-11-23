@@ -1,0 +1,13 @@
+body{
+    background-image: url("../WhatsApp\ Image\ 2021-02-12\ at\ 20.42.38.jpeg");
+}
+
+img{
+    width: 500px;
+    height: auto;
+}
+
+h1{
+    font-family:'Times New Roman', Times, serif;
+    font-weight: bolder;
+}
