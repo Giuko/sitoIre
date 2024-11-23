@@ -1,13 +1,70 @@
-body{
-    background-image: url("WhatsApp\ Image\ 2021-02-12\ at\ 20.42.38.jpeg");
+/* File: styles.css */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
 }
 
-img{
-    width: 500px;
-    height: auto;
+header.hero {
+    background: url('images/floral-background.jpg') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 20px;
+    border-bottom: 5px solid #f4f4f4;
 }
 
-h1{
-    font-family:'Times New Roman', Times, serif;
-    font-weight: bolder;
+header.hero h1 {
+    font-size: 2.5em;
+}
+
+header.hero p {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+section {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    text-align: center;
+}
+
+section.bio, section.hobbies {
+    text-shadow: 
+    4px 4px 0 rgba(0, 0, 0, 1), 
+    3px 3px 2px rgba(50, 50, 50, 0.8), 
+    6px 6px 10px rgba(0, 0, 0, 0.5);
+
+    background: url('images/hobbies.jpg') no-repeat center center/cover;
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+section.hobbies ul{
+    list-style-type: none;
+}
+
+section.gallery .images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+section.gallery img {
+    max-width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #333;
+    color: white;
+    margin-top: 20px;
 }
