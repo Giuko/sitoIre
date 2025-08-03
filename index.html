@@ -664,6 +664,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             transition: all 0.3s ease;
+            border: 2px solid transparent;
         }
 
         .music-player.minimized {
@@ -845,11 +846,12 @@
 
     <!-- Music Player -->
     <div class="music-player" id="musicPlayer">
-        <div>🎵 Atmosfera</div>
+        <div>🎵 Musica Ambient</div>
         <div class="music-controls">
-            <button class="music-btn" onclick="toggleMusic()">Play</button>
+            <button class="music-btn" onclick="toggleMusic()">▶️ Play</button>
             <button class="music-btn" onclick="togglePlayer()">−</button>
         </div>
+        <div style="font-size: 0.8em; opacity: 0.7; margin-top: 5px;">Suoni rilassanti per la navigazione</div>
     </div>
 
     <header class="hero" id="home">
@@ -1417,13 +1419,116 @@
         }
 
         // Music player functions
+        let audioContext;
+        let oscillator;
+        let gainNode;
+
         function toggleMusic() {
             const btn = event.target;
-            musicPlaying = !musicPlaying;
-            btn.textContent = musicPlaying ? 'Pause' : 'Play';
             
-            // Add visual feedback
-            btn.style.background = musicPlaying ? '#4CAF50' : '';
+            if (!musicPlaying) {
+                startMusic();
+                btn.textContent = 'Pause';
+                btn.style.background = '#4CAF50';
+                musicPlaying = true;
+            } else {
+                stopMusic();
+                btn.textContent = 'Play';
+                btn.style.background = '';
+                musicPlaying = false;
+            }
+        }
+
+        function startMusic() {
+            try {
+                // Create audio context
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Create oscillator for ambient sound
+                oscillator = audioContext.createOscillator();
+                gainNode = audioContext.createGain();
+                
+                // Connect nodes
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Set up ambient sound parameters
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3 note
+                
+                // Set volume (very low for ambient background)
+                gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+                
+                // Start the sound
+                oscillator.start();
+                
+                // Add frequency modulation for ambient effect
+                modulateFrequency();
+                
+            } catch (error) {
+                console.log('Audio not supported in this browser');
+                // Fallback: just show visual feedback
+                showMusicVisualization();
+            }
+        }
+
+        function stopMusic() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            stopMusicVisualization();
+        }
+
+        function modulateFrequency() {
+            if (!oscillator || !audioContext) return;
+            
+            const frequencies = [220, 246.94, 261.63, 293.66, 329.63]; // A, B, C, D, E
+            let currentIndex = 0;
+            
+            const changeFrequency = () => {
+                if (!oscillator || !musicPlaying) return;
+                
+                currentIndex = (currentIndex + 1) % frequencies.length;
+                const nextFreq = frequencies[currentIndex];
+                
+                oscillator.frequency.exponentialRampToValueAtTime(
+                    nextFreq, 
+                    audioContext.currentTime + 2
+                );
+                
+                setTimeout(changeFrequency, 3000); // Change every 3 seconds
+            };
+            
+            setTimeout(changeFrequency, 3000);
+        }
+
+        function showMusicVisualization() {
+            const player = document.getElementById('musicPlayer');
+            let colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            let colorIndex = 0;
+            
+            const visualize = () => {
+                if (!musicPlaying) return;
+                
+                player.style.borderColor = colors[colorIndex];
+                player.style.boxShadow = `0 0 20px ${colors[colorIndex]}40`;
+                colorIndex = (colorIndex + 1) % colors.length;
+                
+                setTimeout(visualize, 500);
+            };
+            
+            visualize();
+        }
+
+        function stopMusicVisualization() {
+            const player = document.getElementById('musicPlayer');
+            player.style.borderColor = '';
+            player.style.boxShadow = '';
         }
 
         function togglePlayer() {
